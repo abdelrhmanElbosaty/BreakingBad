@@ -1,6 +1,7 @@
 import 'package:breaking_bad_bloc/bussiness_logic/cubit/characters_cubit.dart';
 import 'package:breaking_bad_bloc/bussiness_logic/cubit/characters_state.dart';
 import 'package:breaking_bad_bloc/consts/colors/my_colors.dart';
+import 'package:breaking_bad_bloc/consts/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/model/character.dart';
@@ -197,39 +198,45 @@ class _CharactersScreenState extends State<CharactersScreen> {
         color: MyColors.thirdColor,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: GridTile(
-        footer: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          color: Colors.black54,
-          alignment: Alignment.bottomCenter,
-          child: Text(
-            character.charName,
-            style: const TextStyle(
-              height: 1.3,
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      child: InkWell(
+        onTap: () => Navigator.pushNamed(context, charactersDetailsScene, arguments: character),
+        child: GridTile(
+          footer: Hero(
+            tag: character.id,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              color: Colors.black54,
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                character.charName,
+                style: const TextStyle(
+                  height: 1.3,
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
             ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            textAlign: TextAlign.center,
           ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: MyColors.secondaryColor,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: MyColors.secondaryColor,
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: character.image.isNotEmpty
+                ? FadeInImage.assetNetwork(
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: 'assets/images/loadingImage.gif',
+                    image: character.image)
+                : Image.asset('assets/images/placeHolderImage.png'),
           ),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: character.image.isNotEmpty
-              ? FadeInImage.assetNetwork(
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: 'assets/images/loadingImage.gif',
-                  image: character.image)
-              : Image.asset('assets/images/placeHolderImage.png'),
         ),
       ),
     );

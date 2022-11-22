@@ -7,6 +7,7 @@ import 'package:breaking_bad_bloc/presentation/scenes/characters_details_screen.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'consts/strings.dart';
+import 'data/model/character.dart';
 
 class AppRouter {
 
@@ -29,7 +30,8 @@ class AppRouter {
        );
 
      case charactersDetailsScene:
-       return MaterialPageRoute(builder: (context) => CharactersDetailsScreen());
+       final character = settings.arguments as Character;
+       return MaterialPageRoute(builder: (context) => CharactersDetailsScreen(character: character));
    }
   }
 }
