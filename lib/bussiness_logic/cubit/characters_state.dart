@@ -1,6 +1,6 @@
-part of 'characters_cubit.dart';
 
-@immutable
+import 'package:breaking_bad_bloc/data/model/character.dart';
+
 abstract class CharactersState {}
 
 class CharactersInitial extends CharactersState {}

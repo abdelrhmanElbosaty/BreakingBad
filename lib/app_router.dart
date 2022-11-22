@@ -5,6 +5,7 @@ import 'package:breaking_bad_bloc/data/web_services/characters_web_services.dart
 import 'package:breaking_bad_bloc/presentation/scenes/characters_screen.dart';
 import 'package:breaking_bad_bloc/presentation/scenes/characters_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'consts/strings.dart';
 
 class AppRouter {
@@ -22,10 +23,11 @@ class AppRouter {
      case charactersScene:
        return MaterialPageRoute(
            builder: (context) => BlocProvider(
-             create: (context) => CharactersCubit(charactersRepository),
+             create: (context) => charactersCubit,
              child: CharactersScreen(),
-           ) 
+           ),
        );
+
      case charactersDetailsScene:
        return MaterialPageRoute(builder: (context) => CharactersDetailsScreen());
    }
