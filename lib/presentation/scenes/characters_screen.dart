@@ -5,6 +5,8 @@ import 'package:breaking_bad_bloc/consts/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/model/character.dart';
+import '../widgets/widgets.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class CharactersScreen extends StatefulWidget {
   @override
@@ -32,19 +34,33 @@ class _CharactersScreenState extends State<CharactersScreen> {
         title: isSearching ? buildSearchTextField() : buildNormalAppBar(),
         leading: isSearching
             ? IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back_ios_outlined,
-              color: MyColors.secondaryColor),
-          hoverColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-        )
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back_ios_outlined,
+                    color: MyColors.secondaryColor),
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+              )
             : Container(),
         actions: buildAppBarActions(),
       ),
-      body: buildCubitBuilder(),
+      body: OfflineBuilder(
+        connectivityBuilder: (
+          BuildContext context,
+          ConnectivityResult connectivity,
+          Widget child,
+        ) {
+          final bool connected = connectivity != ConnectivityResult.none;
+          if (connected) {
+            return buildCubitBuilder();
+          } else {
+            return buildOfflineContainer();
+          }
+        },
+        child: buildLoadingProgressWidget(),
+      ),
     );
   }
 
@@ -141,6 +157,33 @@ class _CharactersScreenState extends State<CharactersScreen> {
     });
   }
 
+  Widget buildOfflineContainer() {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        color: Colors.white,
+        child: Column(
+          children: [
+            const SizedBox(height: 30),
+            Image.asset('assets/images/offlineConnection.png'),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                  'can\'t connect .. check your internet',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget buildCubitBuilder() {
     return BlocBuilder<CharactersCubit, CharactersState>(
       builder: (context, state) {
@@ -199,7 +242,8 @@ class _CharactersScreenState extends State<CharactersScreen> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: InkWell(
-        onTap: () => Navigator.pushNamed(context, charactersDetailsScene, arguments: character),
+        onTap: () => Navigator.pushNamed(context, charactersDetailsScene,
+            arguments: character),
         child: GridTile(
           footer: Hero(
             tag: character.id,
@@ -238,14 +282,6 @@ class _CharactersScreenState extends State<CharactersScreen> {
                 : Image.asset('assets/images/placeHolderImage.png'),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildLoadingProgressWidget() {
-    return const Center(
-      child: CircularProgressIndicator(
-        color: Colors.yellowAccent,
       ),
     );
   }
